@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="all.css">
+</head>
+
+<body>
+
+
+    <div class="wrap">
+        <h1 class="logo">TodoList</h1>
+        <form action="">
+            <input type="text" class="txt" placeholder="輸入待辦事項">
+            <input type="button" class="save" value="儲存代辦">
+        </form>
+
+
+        <ul class="list">
+            <li>
+                <input type="checkbox">
+                待辦事項一
+                <button type="button" class="delete"><span class="material-icons">
+                        close
+                    </span></button>
+            </li>
+            <li>待辦事項二 <input type="button" class="delete" value="刪除代辦"></li>
+        </ul>
+
+    </div>
+
+
+    <script>
+
+        const txt = document.querySelector('.txt');
+        const save = document.querySelector('.save');
+        const list = document.querySelector('.list');
+
+        let data = [
+            {
+                "content": "待辦事項一"
+            },
+            {
+                "content": "今天記得買蛋糕"
+            },
+            {
+                "content": "回家前買生魚片"
+            }
+        ]
+
+        renderData();
+
+        // 資料初始化
+        function renderData() {
+
+            let str = '';
+            data.forEach(function (item, index) {
+                str += `  <li>
+                    <div>
+                        <input type="checkbox">
+                    ${item.content}
+                        </div>
+
+                    <button type="button" class="delete"  data-num="${index}">
+                        <span class="material-icons">
+                            cancel
+                    </span>
+                    </button>
+                    </li>`
+            })
+
+
+
+            // console.log(str);
+            const list = document.querySelector(".list")
+            list.innerHTML = str;
+        }
+
+        // 點擊新增資料
+        save.addEventListener('click', function (e) {
+            if (txt.value == "") {
+                alert("請輸入內容");
+                return;
+            }
+
+            let obj = {};
+            obj.content = txt.value;
+            console.log(obj);
+            data.push(obj);
+            renderData();
+            txt.value = ""; //新增完清空輸入欄
+        })
+
+
+        //刪除資料 範圍監聽
+        list.addEventListener('click', function (e) {
+            // console.log(e.target.nodeName);
+
+            //範圍監聽
+            if (e.target.nodeName !== "SPAN") {
+                console.log('沒有點擊到按鈕')
+                // alert("你目前不是點擊到按鈕");
+                return;
+            } else if (e.target.nodeName == "BUTTON") {
+
+            }
+
+            //選取陣列內容
+            let num = e.target.getAttribute("data-num");
+            console.log(num);
+            data.splice(num, 1);
+            renderData();
+        })
+
+
+    </script>
+</body>
+
+</html>
