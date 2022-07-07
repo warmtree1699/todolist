@@ -15,28 +15,47 @@
 
 
     <div class="wrap">
-        <h1 class="logo">TodoList</h1>
-        <form action="">
-            <input type="text" class="txt" placeholder="輸入待辦事項">
-            <input type="button" class="save" value="儲存代辦">
-        </form>
+        <div id="app">
+            <h1 class="logo">TodoList</h1>
+
+            <form action="">
+                <input type="text" class="txt" placeholder="輸入待辦事項" v-model="newTodo" @keyup.enter="addTodo">
+                <input type="button" class="save" value="儲存代辦" @click="addTodo">
+            </form>
 
 
-        <ul class="list">
-            <li>
-                <input type="checkbox">
-                待辦事項一
-                <button type="button" class="delete"><span class="material-icons">
-                        close
-                    </span></button>
-            </li>
-            <li>待辦事項二 <input type="button" class="delete" value="刪除代辦"></li>
-        </ul>
+            <ul class="list">
+                <ul class="nav_list">
+                    <li class="nav_item"><a type="button" href="#" @click="visibility='all' ">全部</a></li>
+                    <li class="nav_item"><a type="button" href="#" @click="visibility='doing' ">執行中</a></li>
+                    <li class="nav_item"><a type="button" href="#" @click="visibility='completed' ">完成</a></li>
+                </ul>
+                <li class="list_item" v-for="(item,key) in filteredTodos">
+                    <div>
+                        <input type="checkbox" v-model="item.completed">
+                        <label for="" :class="{'completed':item.completed}">{{ item.content }}</label>
+                    </div>
+                    <button type="button" class="delete" @click="removeTodo(key)">
+                        <span class="material-icons">
+                            close
+                        </span>
+                    </button>
+                </li>
+                <div class="list_footer">
+                    <div>還有{{  undoneTodos.length}}筆任務未完成</div>
+                    <div>
+                        <button type="button" @click="removeAll">清除所有任務</button>
+                    </div>
+                </div>
+            </ul>
 
+
+        </div>
     </div>
 
+    <script src="https://unpkg.com/vue@3"></script>
+    <!-- <script>
 
-    <script>
 
         const txt = document.querySelector('.txt');
         const save = document.querySelector('.save');
@@ -118,7 +137,84 @@
             renderData();
         })
 
+    </script> -->
 
+
+    <script>
+        Vue.createApp({
+            data: function () {
+                return {
+                    newTodo: '',
+                    todos: [
+                        {
+                            content: "代辦事項一",
+                            completed: false
+                        },
+                        {
+                            content: "代辦事項二",
+                            completed: false
+                        },
+                        {
+                            content: "代辦事項三",
+                            completed: false
+                        },
+                    ],
+                    visibility: 'all',
+                }
+            },
+            methods: {
+
+                // 新增
+                addTodo: function () {
+                    let value = this.newTodo;
+                    this.todos.push({
+                        content: value,
+                        completed: false
+                    });
+                    this.newTodo = '';
+                },
+
+                // 刪除
+                removeTodo: function (key) {
+                    this.todos.splice(key, 1);
+                },
+
+                removeAll: function (){
+                    this.todos = [];
+                }
+
+            },
+            computed: {
+                filteredTodos: function(){
+                    if(this.visibility == 'all'){
+                        return this.todos;
+                    }else if(this.visibility == 'doing'){
+                        let newTodos= [];
+                        this.todos.forEach(function (item) {
+                            if(!item.completed) {
+                                newTodos.push(item);
+                            }
+                        })
+                        return newTodos;
+                    } else if (this.visibility == 'completed'){
+                        let newTodos = [];
+                        this.todos.forEach(function (item) {
+                            if(item.completed){
+                                newTodos.push(item);
+                            }
+                        })
+                        return newTodos;
+                    }
+                },
+                undoneTodos: function () {
+                    return this.todos.filter(todo => todo.completed != true);
+                }
+            },
+            mounted: function () {
+
+            },
+
+        }).mount('#app')
     </script>
 </body>
 
